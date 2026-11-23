@@ -110,7 +110,12 @@ def inspect_system(Nx: int = 8, Ny: int = 8, output: Path | None = None) -> str:
         m = (3 - 1) + (3 - 1) * (Nx - 2)
         row = A.getrow(m)
         terms = ", ".join(f"A[{m},{col}]={val:.6f}" for col, val in zip(row.indices, row.data))
-        lines.extend([f"Строка для узла (i,j)=(3,3), m={m}: {terms}", f"b[{m}]={b[m]:.6f}"])
+        equation = " ".join(f"{val:+.6f}u_{col}" for col, val in zip(row.indices, row.data)).lstrip("+")
+        lines.extend([
+            f"Строка для узла (i,j)=(3,3), m={m}: {terms}",
+            f"b[{m}]={b[m]:.6f}",
+            f"Уравнение строки m={m}: {equation} = {b[m]:.6f}",
+        ])
     if output is not None:
         fig, ax = plt.subplots(figsize=(6, 6))
         ax.spy(A, markersize=max(0.25, min(4.0, 120.0 / max(Nx, Ny))))
